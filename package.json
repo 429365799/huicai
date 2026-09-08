@@ -1,0 +1,12 @@
+{
+  "name": "overflow-palette-minigame",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build.js --target all",
+    "build:wechat": "node tools/build.js --target wechat",
+    "build:douyin": "node tools/build.js --target douyin",
+    "generate:sfx": "node tools/generate-sfx.js",
+    "test": "node tests/game-core.test.js && node tests/solver.test.js && node tests/challenges.test.js && node tests/theme.test.js && node tests/night-ui.test.js && node tests/ad-service.test.js && node tests/app-runtime.test.js && node tests/sfx.test.js && node tests/victory-effects.test.js && node tests/story-flow.test.js && node tests/story-live.test.js && node tests/scroll-model.test.js && node tests/build.test.js"
+  }
+}

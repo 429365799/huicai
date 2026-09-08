@@ -1,0 +1,27 @@
+/* Persistent story beneath a transparent canvas, browser study only. */
+body { background: #e4e8dc; }
+.scene { position: fixed; inset: 0; margin: auto; width: min(100%,430px); overflow: hidden; pointer-events: none; }
+.scene figure { position: absolute; top: 0; left: 50%; width: max(100%,75svh); height: 100svh; max-width: none; border-radius: 0; transform: translateX(-50%); }
+.scene figure > img:first-child { width: 100%; height: 100%; object-fit: cover; }
+.scene figure .leaf { width: 13%; left: 53%; top: 87%; transition: top 2200ms ease-in-out, left 2200ms ease-in-out, transform 2200ms ease-in-out; }
+.scene.flowing figure .leaf { top: 94%; left: 49%; transform: translate(-50%,-50%) rotate(68deg) scale(.78); }
+main { background: transparent; display: flex; flex-direction: column; min-height: 100svh; }
+main header { padding: 15px; border-radius: 20px; background: rgba(250,247,239,.85); }
+main .story { margin-top: auto; padding: 22px 10px; background: rgba(250,247,239,.85); border-radius: 24px 24px 0 0; }
+main footer { margin: 0; padding: 8px; background: rgba(250,247,239,.85); border-radius: 0 0 24px 24px; }
+main .start { border-radius: 0; }
+.game-frame { z-index: 1; background: transparent; opacity: 0; visibility: hidden; transition: opacity 700ms ease-out; }
+.entering .game-frame, .playing .game-frame { opacity: 1; visibility: visible; }
+.entering main { opacity: 0; transition: opacity 450ms ease-out; pointer-events: none; }
+.playing .game-frame { pointer-events: auto; }
+.scene .water-lines { overflow: visible; }
+.scene .current { opacity: .24; stroke-dasharray: 3 12; stroke-dashoffset: 0; animation: stream 12s linear infinite; }
+.scene .impact { transform-origin: 45px 52px; animation: breathing-water 8s ease-out infinite; }
+@keyframes stream { to { stroke-dashoffset: -90; } }
+@keyframes breathing-water { 0% { rx: 1; ry: .4; opacity: 0; } 12% { opacity: .45; } 65%,100% { rx: 24; ry: 9; opacity: 0; } }
+.scene.answer .current { opacity: .75; stroke-width: 1; }
+.scene.answer .impact { stroke-width: .7; }
+.quiet .scene * { animation: none !important; transition-duration: 1ms !important; }
+.quiet .game-frame, .quiet main { transition-duration: 150ms; }
+.replay { left: calc(50% + min(25vw,120px)); font-size: 12px; padding: 8px 16px; }
+@media (prefers-reduced-motion: reduce) { .scene * { animation: none !important; transition-duration: 1ms !important; } }

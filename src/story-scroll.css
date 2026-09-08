@@ -1,0 +1,18 @@
+body { background: #dfdfd8; }
+main[hidden] { display: none; }
+.journey-caption[hidden] { display: none; }
+.scroll-scene { position: fixed; inset: 0; margin: auto; width: min(100%,430px); height: 100%; pointer-events: none; }
+main { min-height: 100svh; background: transparent; display: flex; flex-direction: column; transition: opacity 550ms ease; }
+main header { padding: 14px; border-radius: 20px; background: rgba(250,247,239,.87); }
+main .story { margin-top: auto; padding: 22px 8px; border-radius: 22px 22px 0 0; background: rgba(250,247,239,.9); }
+main .start { border-radius: 0; }
+main footer { margin: 0; padding: 6px; border-radius: 0 0 22px 22px; background: rgba(250,247,239,.9); }
+.game-frame { background: transparent; z-index: 1; opacity: 0; visibility: hidden; transition: opacity 700ms ease; }
+.puzzle .game-frame { opacity: 1; visibility: visible; pointer-events: auto; }
+.leaving .game-frame { opacity: 0; visibility: visible; pointer-events: none; }
+.departing main { opacity: 0; pointer-events: none; }
+.journey-caption { position: fixed; z-index: 3; top: max(16px,env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); width: min(calc(100% - 48px),350px); margin: 0; padding: 14px 18px; text-align: center; color: #304c46; font-size: 15px; line-height: 1.6; background: rgba(250,247,239,.88); border-radius: 18px; pointer-events: none; }
+.journey-actions { position: fixed; z-index: 3; bottom: max(18px,env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
+.journey-actions[hidden] { display: none; }
+.journey-actions button { position: static; transform: none; border: 1px solid #829485; padding: 12px 18px; border-radius: 20px; background: #faf7ef; color: #304c46; min-height: 44px; white-space: nowrap; font-size: 14px; cursor: pointer; }
+.quiet .game-frame, .quiet main { transition-duration: 150ms; }

@@ -1,0 +1,21 @@
+/* Browser-only prototype: two art layers, one trail and one local reveal mask. */
+body { background: #faf7ef; }
+main { position: relative; z-index: 2; }
+figure { position: relative; isolation: isolate; }
+figure .leaf { position: absolute; left: 58%; top: 50%; width: 37%; height: auto; aspect-ratio: auto; transform: translate(-50%,-50%); pointer-events: none; }
+.water-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+.current { fill: none; stroke: #e1ecc9; stroke-width: .7; stroke-linecap: round; stroke-dasharray: 90; stroke-dashoffset: 90; opacity: 0; }
+.impact { fill: none; stroke: #eff5da; stroke-width: .4; opacity: 0; }
+.start { position: relative; overflow: hidden; }
+.start span { position: relative; z-index: 1; }
+.start::before { content: ''; position: absolute; width: 150%; aspect-ratio: 1; left: var(--touch-x,50%); top: var(--touch-y,50%); background: radial-gradient(ellipse, #173d34 15%, #234f42 45%, transparent 70%); border-radius: 43% 57% 64% 36%; transform: translate(-50%,-50%) scale(var(--ink,0)); opacity: .95; transition: transform 600ms cubic-bezier(.16,.65,.3,1); }
+.start:active { background: #355e50; }
+.start:active::before { transform: translate(-50%,-50%) scale(1); }
+.start[aria-disabled=true] { cursor: wait; }
+footer label { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; }
+footer p { margin: 0; }
+.game-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 0; visibility: hidden; pointer-events: none; background: #faf7ef; }
+.entering .game-frame, .playing .game-frame { visibility: visible; }
+.replay { position: fixed; z-index: 4; bottom: max(8px,env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); border: 1px solid #c3cfc2; background: #faf7ef; color: #304c46; border-radius: 22px; padding: 10px 20px; min-height: 44px; font-size: 14px; cursor: pointer; }
+.playing main { display: none; }
+.playing .game-frame { pointer-events: auto; }

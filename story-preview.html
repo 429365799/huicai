@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>洄彩 · 画板样张</title>
+  <style>
+    .effect-lab{box-sizing:border-box}
+    html,body,iframe{width:100%;height:100%;margin:0;border:0;overflow:hidden}iframe{display:block}
+    .effect-lab{position:fixed;z-index:10;left:calc(50% + 220px);top:150px;width:154px;padding:12px;border:1px solid rgba(255,255,255,.15);border-radius:18px;background:rgba(15,27,30,.9);box-shadow:0 16px 44px rgba(0,0,0,.28);backdrop-filter:blur(14px);color:#eee4cf;font:12px/1.2 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+    .effect-lab strong{display:block;margin:0 0 9px 2px;font-size:12px;letter-spacing:.08em;color:#cdb66e}
+    .effect-lab button{display:block;width:100%;height:34px;margin:5px 0;border:1px solid transparent;border-radius:11px;background:rgba(255,255,255,.07);color:#dcd5c6;font:600 12px inherit;cursor:pointer;transition:background .16s,border-color .16s,color .16s}
+    .effect-lab button:hover{background:rgba(255,255,255,.13)}
+    .effect-lab button[aria-pressed="true"]{border-color:#d8be68;background:rgba(216,190,104,.2);color:#fff4ca}
+    .effect-lab summary{cursor:pointer;color:#cdb66e;min-height:24px;line-height:24px}.effect-lab:not([open]){width:96px;padding:6px 10px}.effect-lab[open] summary{margin-bottom:8px}
+    @media(max-width:760px){.effect-lab{left:auto;right:8px;top:8px;bottom:auto;width:154px;padding:10px}.effect-lab strong{font-size:10px}.effect-lab button{font-size:11px}}
+  </style>
+</head>
+<body>
+  <iframe id="game-preview" title="洄彩玩法样张" src="preview.html?level=0"></iframe>
+  <details class="effect-lab" aria-label="临时染色动效选择">
+    <summary>动效预览</summary>
+    <strong>临时试验 · 切换会重开</strong>
+    <button type="button" data-effect="auto" aria-pressed="true">每5关换</button>
+    <button type="button" data-effect="ink" aria-pressed="false">1 墨滴涌色</button>
+    <button type="button" data-effect="paper" aria-pressed="false">2 柔纸起伏</button>
+    <button type="button" data-effect="ripple" aria-pressed="false">3 水面涟漪</button>
+    <button type="button" data-effect="brush" aria-pressed="false">4 湿笔扫染</button>
+    <button type="button" data-effect="bloom" aria-pressed="false">5 色露绽放</button>
+  </details>
+  <script>
+    (() => {
+      const frame = document.querySelector('#game-preview');
+      const buttons = [...document.querySelectorAll('[data-effect]')];
+      let selected = 'auto';
+      const apply = () => frame.contentWindow.__PALETTE_SET_EFFECT_STYLE__?.(selected);
+      buttons.forEach(button => button.addEventListener('click', () => {
+        selected = button.dataset.effect;
+        buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        apply();
+      }));
+      frame.addEventListener('load', apply);
+    })();
+  </script>
+</body>
+</html>

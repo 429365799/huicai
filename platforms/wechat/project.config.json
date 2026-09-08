@@ -1,0 +1,12 @@
+{
+  "appid": "touristappid",
+  "compileType": "game",
+  "description": "洄彩微信小游戏构建产物",
+  "projectname": "洄彩",
+  "setting": {
+    "checkSiteMap": false,
+    "es6": true,
+    "minified": false,
+    "urlCheck": false
+  }
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>洄彩 · 核心玩法预览</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+      body {
+        display: grid;
+        place-items: center;
+        background: #273044;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      }
+      canvas {
+        display: block;
+        width: min(100vw, 390px);
+        height: min(100vh, 844px);
+        border-radius: 24px;
+        box-shadow: 0 28px 80px rgba(0,0,0,.38);
+        touch-action: none;
+      }
+      @media (max-width: 420px) {
+        canvas { width: 100vw; height: 100vh; border-radius: 0; }
+      }
+      body.story-entry { background: #faf7ef; }
+      body.story-entry canvas { box-shadow: none; }
+      html.story-live, body.story-live { background: transparent; }
+    </style>
+  </head>
+  <body>
+    <script>
+      (() => {
+        if (['live','scroll'].includes(new URLSearchParams(location.search).get('story'))) {
+          document.documentElement.classList.add('story-live');
+          document.body.classList.add('story-live');
+          window.__PALETTE_STORY_MODE__ = true;
+          window.__PALETTE_SCROLL_MODE__ = new URLSearchParams(location.search).get('story') === 'scroll';
+          window.__PALETTE_STORY_SIGNAL__ = type => window.parent.postMessage({kind:'huicai-story',type},location.origin);
+        }
+        if (new URLSearchParams(location.search).get('story') === '1') document.body.classList.add('story-entry');
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        let touchHandler = () => {};
+        let moveHandler = () => {};
+        let endHandler = () => {};
+        let cancelHandler = () => {};
+        let wheelHandler = () => false;
+        let activePointer = null;
+        const size = () => {
+          const width = Math.min(window.innerWidth, 390);
+          const height = Math.min(window.innerHeight, 844);
+          return { width, height };
+        };
+        window.wx = {
+          createCanvas: () => canvas,
+          createImage: () => new Image(),
+          createInnerAudioContext: () => {
+            const audio = new Audio();
+            return {
+              obeyMuteSwitch: true,
+              get src() { return audio.src; },
+              set src(value) { audio.src = value; },
+              get volume() { return audio.volume; },
+              set volume(value) { audio.volume = value; },
+              play: () => audio.play(),
+              stop: () => {
+                audio.pause();
+                audio.currentTime = 0;
+              },
+            };
+          },
+          getSystemInfoSync: () => ({
+            windowWidth: size().width,
+            windowHeight: size().height,
+            pixelRatio: window.devicePixelRatio || 1,
+          }),
+          onTouchStart: (handler) => { touchHandler = handler; },
+          onTouchMove: (handler) => { moveHandler = handler; },
+          onTouchEnd: (handler) => { endHandler = handler; },
+          onTouchCancel: (handler) => { cancelHandler = handler; },
+          onWheel: (handler) => { wheelHandler = handler; },
+          onWindowResize: (handler) => window.addEventListener("resize", () => {
+            handler({ windowWidth: size().width, windowHeight: size().height });
+          }),
+        };
+        window.__MINIGAME_TARGET__ = "browser";
+        window.__MINIGAME_RUNTIME__ = window.wx;
+        window.__PALETTE_AD_CONFIG__ = {};
+        // Development-only: jump directly to a level for local playtesting.
+        // Campaign numbers are 0..19; 0 is the preserved introduction.
+        window.__PALETTE_PREVIEW_LEVEL__ = Number(new URLSearchParams(location.search).get("level") ?? 0);
+        const pointer = (event) => {
+          const rect = canvas.getBoundingClientRect();
+          return {
+            identifier: event.pointerId,
+            clientX: (event.clientX - rect.left) * (size().width / rect.width),
+            clientY: (event.clientY - rect.top) * (size().height / rect.height),
+          };
+        };
+        canvas.addEventListener("pointerdown", (event) => {
+          if (activePointer !== null || !event.isPrimary || event.button !== 0) return;
+          activePointer = event.pointerId;
+          canvas.setPointerCapture(event.pointerId);
+          touchHandler({ touches: [pointer(event)] });
+        });
+        canvas.addEventListener("pointermove", (event) => {
+          if (event.pointerId === activePointer) moveHandler({ touches: [pointer(event)] });
+        });
+        canvas.addEventListener("pointerup", (event) => {
+          if (event.pointerId !== activePointer) return;
+          activePointer = null;
+          endHandler({ touches: [], changedTouches: [pointer(event)] });
+          if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+        });
+        const cancelPointer = () => {
+          activePointer = null;
+          cancelHandler({ touches: [] });
+        };
+        canvas.addEventListener("pointercancel", cancelPointer);
+        canvas.addEventListener("lostpointercapture", cancelPointer);
+        window.addEventListener("blur", cancelPointer);
+        canvas.addEventListener("wheel", (event) => {
+          const scale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? size().width : 1;
+          if (wheelHandler({ ...pointer(event), deltaX: event.deltaX * scale, deltaY: event.deltaY * scale })) event.preventDefault();
+        }, { passive: false });
+      })();
+    </script>
+    <!-- Keep the preview's shared scripts on the same version after adapter changes. -->
+    <script src="src/game-core.js?v=intro-scroll-1"></script>
+    <script src="src/challenge-levels.js?v=campaign-20-1"></script>
+    <script src="src/level.js?v=campaign-20-1"></script>
+    <script src="src/victory-effects.js?v=intro-scroll-1"></script>
+    <script src="src/platform.js?v=night-glass-1"></script>
+    <script src="src/ad-service.js?v=rewarded-continue-1"></script>
+    <script src="src/theme.js?v=board-1"></script>
+    <script src="src/night-ui.js?v=night-glass-1"></script>
+    <script src="game.js?v=spring-cover-1"></script>
+    <script>
+      // Development-only handoff geometry; not included in wx/tt builds.
+      if (['1','live','scroll'].includes(new URLSearchParams(location.search).get('story'))) {
+        window.__storyGeometry = () => ({ board: { ...layout.board }, cells: game.board.map(row => row.slice()) });
+        window.__storyReady = true;
+      }
+    </script>
+  </body>
+</html>
